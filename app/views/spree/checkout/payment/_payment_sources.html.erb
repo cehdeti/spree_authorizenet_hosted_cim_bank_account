@@ -1,0 +1,28 @@
+<table class="existing-credit-card-list" data-hook="existing_cards">
+  <tbody>
+    <% payment_sources.each_with_index do |source, index| %>
+      <tr id="<%= dom_id(source, 'spree') %>" class="<%= cycle('even', 'odd') %>">
+        <td>
+          <%= radio_button_tag "order[existing_payment_source]", "#{source.class}/#{source.id}", index == 0, { class: "existing-cc-radio" } %>
+        </td>
+        <td>
+          <% if source.is_a?(Spree::BankAccount) %>
+            <span class="account-type">
+              <%= source.bank_name || Spree.t(:bank_account) %> <%= Spree.t(:ending_in).downcase %> <%= source.account_number_last_digits %>
+            </span>
+          <% else %>
+            <span class="cc-type">
+              <% unless (cc_type = source.cc_type).blank? %>
+                <%= image_tag "credit_cards/icons/#{cc_type}.png" %>
+              <% end %>
+              <% if source.last_digits %>
+                <%= Spree.t(:ending_in) %> <%= source.last_digits %>
+              <% end %>
+            </span>
+          <% end %>
+          &nbsp;(<span class="full-name"><%= source.name %></span>)
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
